@@ -55,33 +55,68 @@
     <div class="container">
         <h2>تفقد ركاب الباص</h2>
         <div class="form-group">
-            <label for="passenger">أدخل اسم الراكب:</label>
-            <input type="text" id="passenger" placeholder="أدخل اسم الراكب">
+            <label for="username">اسم المستخدم:</label>
+            <input type="text" id="username" placeholder="أدخل اسم المستخدم">
         </div>
-        <button class="button" onclick="addPassenger()">إضافة راكب</button>
-        <button class="button" onclick="savePassengers()">حفظ الركاب الأساسيين</button>
-        <button class="button" onclick="comparePassengers()">مقارنة الركاب</button>
+        <div class="form-group">
+            <label for="password">كلمة المرور:</label>
+            <input type="password" id="password" placeholder="أدخل كلمة المرور">
+        </div>
+        <button class="button" onclick="login()">تسجيل الدخول</button>
+        <div id="adminSection" style="display: none;">
+            <div class="form-group">
+                <label for="passenger">أدخل اسم الراكب:</label>
+                <input type="text" id="passenger" placeholder="أدخل اسم الراكب">
+            </div>
+            <div class="form-group">
+                <label for="passengerPassword">كلمة مرور الراكب:</label>
+                <input type="password" id="passengerPassword" placeholder="أدخل كلمة مرور الراكب">
+            </div>
+            <button class="button" onclick="addPassenger()">إضافة راكب</button>
+            <button class="button" onclick="savePassengers()">حفظ الركاب الأساسيين</button>
+        </div>
         <div class="result" id="result"></div>
     </div>
     <script>
+        const adminUsername = "admin";
+        const adminPassword = "admin123";
         let basicPassengers = [];
         let currentPassengers = [];
+        let passengerPasswords = {};
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === adminUsername && password === adminPassword) {
+                document.getElementById('adminSection').style.display = 'block';
+                alert('تم تسجيل الدخول كمسؤول.');
+            } else if (passengerPasswords[username] && passengerPasswords[username] === password) {
+                currentPassengers.push(username);
+                alert('تم تسجيل الدخول كراكب.');
+            } else {
+                alert('اسم المستخدم أو كلمة المرور غير صحيحة.');
+            }
+        }
 
         function addPassenger() {
             const passengerInput = document.getElementById('passenger');
+            const passengerPasswordInput = document.getElementById('passengerPassword');
             const passengerName = passengerInput.value.trim();
-            if (passengerName) {
-                currentPassengers.push(passengerName);
+            const passengerPassword = passengerPasswordInput.value.trim();
+
+            if (passengerName && passengerPassword) {
+                basicPassengers.push(passengerName);
+                passengerPasswords[passengerName] = passengerPassword;
                 passengerInput.value = '';
+                passengerPasswordInput.value = '';
                 alert('تم إضافة الراكب: ' + passengerName);
             } else {
-                alert('يرجى إدخال اسم الراكب.');
+                alert('يرجى إدخال اسم الراكب وكلمة المرور.');
             }
         }
 
         function savePassengers() {
-            basicPassengers = [...currentPassengers];
-            currentPassengers = [];
             alert('تم حفظ الركاب الأساسيين.');
         }
 
